@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Particle Text - Break Canvas</title>
+		<link rel="stylesheet" href="particle-text.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
+		<script src="particle-text.js"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				ParticleText({
+					mode: "canvas",
+					effect: "break",
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<canvas id="myCanvas" width="100%" height="100%"></canvas>
+			<input type="text" id="myInput" />
+		</div>
+	</body>
+</html>
