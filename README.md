@@ -120,7 +120,7 @@ ParticleText({
 
 ## 依賴
 
-- [GSAP TweenMax 2.1.3](https://greensock.com/gsap/) - 動畫引擎
+無外部依賴，純原生 JavaScript 實作。
 
 ## 瀏覽器支援
 

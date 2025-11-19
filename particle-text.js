@@ -5,6 +5,77 @@
 (function (global) {
 	"use strict";
 
+	// ===== 自製輕量 Tween 工具 =====
+	const Ease = {
+		quadInOut: function (t) {
+			return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+		},
+		linear: function (t) {
+			return t;
+		}
+	};
+
+	function SimpleTween(target, duration, props) {
+		const startTime = performance.now();
+		const durationMs = duration * 1000;
+		const startValues = {};
+		const endValues = {};
+		const ease = props.ease || Ease.quadInOut;
+		const onComplete = props.onComplete;
+		let animationId = null;
+		let killed = false;
+
+		// 記錄起始值和目標值
+		for (const key in props) {
+			if (key !== 'ease' && key !== 'onComplete' && typeof props[key] === 'number') {
+				startValues[key] = target[key];
+				endValues[key] = props[key];
+			}
+		}
+
+		function update() {
+			if (killed) return;
+
+			const elapsed = performance.now() - startTime;
+			const progress = Math.min(elapsed / durationMs, 1);
+			const easedProgress = ease(progress);
+
+			// 更新所有屬性
+			for (const key in startValues) {
+				target[key] = startValues[key] + (endValues[key] - startValues[key]) * easedProgress;
+			}
+
+			if (progress < 1) {
+				animationId = requestAnimationFrame(update);
+			} else {
+				if (onComplete) onComplete();
+			}
+		}
+
+		animationId = requestAnimationFrame(update);
+
+		return {
+			kill: function () {
+				killed = true;
+				if (animationId) {
+					cancelAnimationFrame(animationId);
+				}
+			}
+		};
+	}
+
+	// 相容 TweenLite API
+	const TweenLite = {
+		to: function (target, duration, props) {
+			return SimpleTween(target, duration, props);
+		}
+	};
+
+	// 相容 GSAP 緩動
+	const Quad = {
+		easeInOut: Ease.quadInOut
+	};
+
 	/**
 	 * Create particle text animation
 	 * @param {Object} options - Configuration options
